@@ -26,7 +26,7 @@ gulp.task('html', ['styles'], function () {
     .pipe($.if('*.css', $.csso()))
     .pipe($.useref.restore())
     .pipe($.useref())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('docs'));
 });
 
 gulp.task('images', function () {
@@ -35,18 +35,18 @@ gulp.task('images', function () {
       progressive: true,
       interlaced: true
     })))
-    .pipe(gulp.dest('dist/images'));
+    .pipe(gulp.dest('docs/images'));
 });
 
 gulp.task('extras', function () {
   return gulp.src(['app/*.*', '!app/*.html'], {dot: true})
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('docs'));
 });
 
 gulp.task('clean', function (cb) {
   return $.cache.clearAll(cb, function() {
     return rimraf('.tmp', function () {
-      return rimraf('dist', cb);
+      return rimraf('docs', cb);
     });
   });
 });
@@ -104,14 +104,14 @@ gulp.task('watch', ['connect', 'serve'], function () {
 });
 
 gulp.task('build', ['html', 'images', 'extras'], function () {
-  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
+  return gulp.src('docs/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
 gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-// Push a subtree from our `dist` folder
+// Push a subtree from our `docs` folder
 gulp.task('deploy', function() {
 
   gulp.src('/')
@@ -121,8 +121,8 @@ gulp.task('deploy', function() {
         message: 'This will deploy to GitHub Pages. Have you already built your application and pushed your updated master branch?'
     }, function(res){
       if (res.task){
-        console.log('Attempting: "git subtree push --prefix dist origin master"');
-        exec('git subtree push --prefix dist origin master', function(err, stdout, stderr) {
+        console.log('Attempting: "git subtree push --prefix docs origin master"');
+        exec('git subtree push --prefix docs origin master', function(err, stdout, stderr) {
             console.log(stdout);
             console.log(stderr);
         });
